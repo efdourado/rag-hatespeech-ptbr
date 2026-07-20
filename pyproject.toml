@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-hatespeech-ptbr"
+version = "0.1.0"
+description = "Experimentos de RAG para classificação de linguagem ofensiva em PT-BR"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.2,<3",
+  "scikit-learn>=1.5,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "jupyterlab>=4.2,<5",
+  "matplotlib>=3.9,<4",
+  "openpyxl>=3.1,<4",
+  "pyarrow>=17,<20",
+  "pytest>=8,<9",
+  "ruff>=0.6,<1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
