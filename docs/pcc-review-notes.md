@@ -1,6 +1,9 @@
-# Pendências identificadas no PCC
+# Histórico da revisão do PCC
 
-Lista para quando a versão editável for enviada. O PDF não foi alterado.
+As pendências abaixo foram levantadas antes da versão final. A revisão do PDF de
+22 de julho de 2026 confirmou que os pontos metodológicos centrais foram
+incorporados. Este arquivo permanece como histórico, não como lista de tarefas
+ativa.
 
 - Corrigir a tabela que apresenta `Ofensivo / Sarcasmo` como uma única classe.
 - Explicar que os *rationales* justificam ofensividade.

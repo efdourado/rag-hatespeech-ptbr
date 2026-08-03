@@ -4,10 +4,10 @@ Projeto de TCC sobre classificação de linguagem ofensiva em português brasile
 com foco na avaliação de comentários sarcásticos e no uso de exemplos recuperados
 do HateBRXplain.
 
-> Status: estrutura inicial. A pergunta de pesquisa e o protocolo experimental ainda
-> serão consolidados após a revisão do texto do PCC com o orientador.
+> Status: início do TCC. O escopo foi consolidado na versão final do PCC de
+> 22 de julho de 2026; a fase atual é a preparação reprodutível dos dados.
 
-## Objetivo provisório
+## Objetivo
 
 Comparar um LLM sem recuperação com uma abordagem RAG que recupera exemplos e
 *rationales* de ofensividade, medindo o desempenho no teste completo e,
@@ -48,9 +48,25 @@ python scripts/inspect_dataset.py data/raw/ARQUIVO.csv
 O script é somente leitura e grava um relatório agregado em
 `outputs/tables/dataset_audit.json`.
 
+## Fase atual: dados
+
+Antes de implementar embeddings, banco vetorial ou integração com LLM, o projeto
+deve concluir quatro entregas:
+
+1. obter a versão oficial do HateBRXplain e registrar origem, versão, licença e
+   integridade do arquivo, sem versionar os comentários;
+2. documentar o esquema real, classes, valores ausentes, *rationales* e duplicatas;
+3. gerar identificadores estáveis e partições reprodutíveis sem vazamento;
+4. produzir um relatório agregado que permita ao orientador aprovar a base antes
+   da indexação e da anotação de sarcasmo.
+
+O plano, os artefatos esperados e os critérios de conclusão estão em
+[`docs/data-preparation-plan.md`](docs/data-preparation-plan.md).
+
 ## Cuidados
 
 - Não versionar o dataset bruto, comentários individuais ou credenciais.
+- Não publicar amostras do corpus antes de confirmar sua licença e seus termos.
 - Preservar emojis, caixa, pontuação e repetições na inspeção inicial.
 - Definir a divisão antes da anotação de sarcasmo.
 - Construir o índice de recuperação somente com o treino.
