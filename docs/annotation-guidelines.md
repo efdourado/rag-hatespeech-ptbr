@@ -31,11 +31,15 @@ operacional única. Casos limítrofes serão discutidos durante o piloto.
 
 ## Procedimento inicial
 
-1. Fazer piloto de 100 comentários do futuro teste, balanceado por ofensividade.
+1. Fazer piloto de 100 comentários da validação, balanceado por ofensividade.
 2. Anotar sem consultar a sugestão da IA.
 3. Comparar discordâncias, registrar exemplos e revisar este guia.
 4. Congelar uma versão do guia antes da anotação principal.
 5. Submeter 10% a 20% a segundo anotador humano independente, se disponível.
+
+O piloto de calibração não poderá usar itens do teste. Após o congelamento do guia,
+os rótulos do teste serão produzidos sem novas mudanças nas regras motivadas pelos
+resultados experimentais.
 
 ## Não fazer
 

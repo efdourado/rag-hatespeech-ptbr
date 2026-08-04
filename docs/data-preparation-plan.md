@@ -4,6 +4,16 @@ Este plano transforma a etapa “Preparação e Ingestão de Dados” do PCC em 
 reprodutíveis. A regra central é simples: nenhum comentário de validação ou teste
 pode entrar no índice de recuperação, direta ou indiretamente.
 
+## Progresso
+
+| Etapa | Estado em 4 de agosto de 2026 |
+|---|---|
+| 0 — aquisição e proveniência | concluída |
+| 1 — contrato e auditoria | concluída |
+| 2 — IDs, duplicatas e derivados | concluída; nenhuma duplicata encontrada |
+| 3 — partições congeladas | concluída com agrupamento por `link_post` |
+| 4 — piloto de sarcasmo | pendente |
+
 ## Etapa 0 — aquisição e proveniência
 
 Registrar em um manifesto local ou relatório agregado:
@@ -63,29 +73,30 @@ limpeza e os grupos potencialmente vazantes estão identificados.
 ## Etapa 3 — partições congeladas
 
 Criar treino, validação e teste com semente fixa, estratificação pelo rótulo de
-ofensividade e agrupamento por duplicatas. A proporção deve ser aprovada após a
-auditoria; uma opção inicial é 70/15/15, mas ela não fica definitiva antes de
-verificar a distribuição e as necessidades da anotação de sarcasmo.
+ofensividade e agrupamento pela versão canônica de `link_post`. A divisão congelada
+usa 5.608 itens no treino, 706 na validação e 686 no teste, com as duas classes
+exatamente balanceadas em cada partição.
 
-Persistir manifestos contendo apenas `comment_id`, partição e, se necessário,
-rótulo. Implementar verificações automáticas para:
+Persistir um manifesto local contendo apenas `id`, `fold` e `split`. Implementar
+verificações automáticas para:
 
 - ausência de IDs e grupos sobrepostos;
 - preservação aproximada da distribuição das classes;
 - reprodutibilidade com a mesma semente;
 - uso exclusivo do treino no futuro índice RAG.
 
-**Artefatos:** manifestos em `data/processed/` e relatório agregado das partições.
+**Artefatos:** `data/processed/split_manifest.csv`, mantido fora do Git, e o
+relatório agregado `outputs/tables/split_audit.json`.
 
 **Concluída quando:** os testes de integridade passam e as partições são congeladas
 antes de ajustar prompts, `top-k`, embeddings ou modelos.
 
 ## Etapa 4 — piloto de sarcasmo
 
-Somente depois de congelar as partições, selecionar do teste o piloto de 100 itens
-previsto no protocolo, balanceado por ofensividade. Aplicar
+Somente depois de congelar as partições, selecionar da validação o piloto de 100
+itens previsto no protocolo, balanceado por ofensividade. Aplicar
 `docs/annotation-guidelines.md`, revisar casos incertos e versionar o guia antes da
-anotação principal.
+anotação principal do teste.
 
 As anotações contêm texto sensível e não devem ser publicadas automaticamente.
 Publicar apenas estatísticas agregadas até confirmar licença, consentimento e

@@ -22,15 +22,15 @@ quando comparado ao mesmo LLM sem recuperação?
 1. Auditar o dataset original sem transformar os textos.
 2. Preservar uma cópia bruta imutável; toda correção deve ocorrer em dados derivados
    e constar em relatório.
-3. Gerar IDs estáveis a partir do conteúdo e verificar duplicatas exatas e textos
+3. Validar os IDs fornecidos pela fonte e verificar duplicatas exatas e textos
    normalizados antes de separar os dados.
-4. Agrupar duplicatas e separar treino, validação e teste de forma estratificada e
-   reprodutível.
+4. Separar treino, validação e teste com `StratifiedGroupKFold`, agrupando pela
+   versão canônica de `link_post` e estratificando por ofensividade.
 5. Persistir os IDs e verificar automaticamente a ausência de sobreposição entre
    partições.
 6. Usar somente o treino como base de recuperação.
-7. Selecionar um piloto balanceado de 100 itens do teste (50 por classe de
-   ofensividade) para refinar o guia de sarcasmo.
+7. Selecionar um piloto balanceado de 100 itens da validação (50 por classe de
+   ofensividade) para refinar e congelar o guia de sarcasmo antes de tocar o teste.
 8. Anotar sarcasmo no teste; usar IA somente como pré-anotadora.
 9. Comparar o mesmo LLM com baseline sem recuperação, *few-shot* fixo (se viável),
    RAG e uma ablação sem *rationales* (se prazo e custo permitirem).
@@ -42,12 +42,14 @@ quando comparado ao mesmo LLM sem recuperação?
 - Complementares: precisão, revocação, macro-F1 e matriz de confusão.
 - Anotação: distribuição, incerteza e Cohen's kappa em amostra anotada
   independentemente por duas pessoas, se houver segundo anotador.
-- Intervalos de confiança e teste pareado serão definidos antes da execução final.
+- Intervalos de confiança e comparações pareadas considerarão `link_post` como
+  unidade de reamostragem, evitando tratar comentários da mesma publicação como
+  observações totalmente independentes.
 
 ## Controles contra vazamento
 
 - Fixar semente e persistir IDs das partições.
-- Deduplicar ou agrupar duplicatas antes da divisão.
+- Manter cada `link_post` canônico em uma única partição.
 - Nunca recuperar exemplos da validação ou do teste.
 - Não ajustar prompt ou hiperparâmetros pelo resultado final do teste.
 - Registrar modelo, prompt, parâmetros, custo e data de cada execução.
@@ -55,7 +57,6 @@ quando comparado ao mesmo LLM sem recuperação?
 ## Pontos abertos
 
 - Confirmar pergunta e hipóteses finais.
-- Confirmar proporções da divisão após inspecionar os dados oficiais.
 - Definir embeddings, LLM, armazenamento vetorial e orçamento.
 - Definir tratamento dos casos `incerto` na análise principal.
 - Confirmar disponibilidade de segundo anotador humano.

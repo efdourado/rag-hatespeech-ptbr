@@ -1,0 +1,107 @@
+{
+  "split_audit_version": 1,
+  "method": {
+    "name": "StratifiedGroupKFold",
+    "n_splits": 10,
+    "shuffle": true,
+    "random_state": 42,
+    "group_column": "link_post",
+    "label_column": "offensive_label",
+    "test_fold": 0,
+    "validation_fold": 7,
+    "remaining_folds": "train",
+    "rag_index_allowed_splits": [
+      "train"
+    ]
+  },
+  "reproducibility": {
+    "python": "3.12.3",
+    "pandas": "2.3.3",
+    "scikit_learn": "1.9.0",
+    "source_sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+    "manifest_sha256": "6a7212fbb42c26fc8e9c8f1ef3fe391fb9f651d5c14820fc3e2b521002208033",
+    "expected_manifest_sha256": "6a7212fbb42c26fc8e9c8f1ef3fe391fb9f651d5c14820fc3e2b521002208033"
+  },
+  "statistics": {
+    "total_rows": 7000,
+    "total_unique_groups_raw": 85,
+    "total_unique_groups_canonical": 85,
+    "split_sizes": {
+      "train": 5608,
+      "validation": 706,
+      "test": 686
+    },
+    "split_proportions": {
+      "train": 0.801143,
+      "validation": 0.100857,
+      "test": 0.098
+    },
+    "class_distribution": {
+      "train": {
+        "0": 2804,
+        "1": 2804
+      },
+      "validation": {
+        "0": 353,
+        "1": 353
+      },
+      "test": {
+        "0": 343,
+        "1": 343
+      }
+    },
+    "unique_groups_by_split": {
+      "train": 67,
+      "validation": 6,
+      "test": 12
+    },
+    "pairwise_id_overlap": {
+      "train__validation": 0,
+      "train__test": 0,
+      "validation__test": 0
+    },
+    "pairwise_group_overlap": {
+      "train__validation": 0,
+      "train__test": 0,
+      "validation__test": 0
+    },
+    "pairwise_normalized_comment_overlap": {
+      "train__validation": 0,
+      "train__test": 0,
+      "validation__test": 0
+    },
+    "group_concentration": {
+      "train": {
+        "largest_group_rows": 362,
+        "largest_group_fraction": 0.064551,
+        "top_3_groups_fraction": 0.18331
+      },
+      "validation": {
+        "largest_group_rows": 251,
+        "largest_group_fraction": 0.355524,
+        "top_3_groups_fraction": 0.875354
+      },
+      "test": {
+        "largest_group_rows": 315,
+        "largest_group_fraction": 0.459184,
+        "top_3_groups_fraction": 0.739067
+      }
+    }
+  },
+  "checks": {
+    "source_sha256_matches": true,
+    "manifest_sha256_matches": true,
+    "manifest_ids_are_unique": true,
+    "manifest_has_only_known_splits": true,
+    "all_source_ids_are_covered_once": true,
+    "ids_do_not_cross_splits": true,
+    "groups_do_not_cross_splits": true,
+    "normalized_comments_do_not_cross_splits": true,
+    "fold_mapping_is_consistent": true,
+    "split_sizes_match_frozen_design": true,
+    "classes_match_frozen_design": true,
+    "every_split_is_class_balanced": true
+  },
+  "valid": true,
+  "failed_checks": []
+}

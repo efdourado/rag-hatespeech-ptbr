@@ -1,0 +1,99 @@
+{
+  "audit_version": 1,
+  "provenance": {
+    "source_filename": "HateBRXplain.csv",
+    "file_size_bytes": 1286709,
+    "sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+    "expected_sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+    "source_url": "https://raw.githubusercontent.com/franciellevargas/HateBR/0ac05461f17c4d7b7655fbee0391ec325e61a83b/dataset/HateBRXplain.csv",
+    "source_revision": "0ac05461f17c4d7b7655fbee0391ec325e61a83b",
+    "license": "CC BY-NC 4.0"
+  },
+  "dataset": {
+    "rows": 7000,
+    "columns": [
+      "id",
+      "comment",
+      "offensive_label",
+      "link_post",
+      "rationales_annotator1",
+      "rationales_annotator2"
+    ],
+    "expected_columns": [
+      "id",
+      "comment",
+      "offensive_label",
+      "link_post",
+      "rationales_annotator1",
+      "rationales_annotator2"
+    ],
+    "missing_columns": [],
+    "extra_columns": [],
+    "column_types": {
+      "id": "int64",
+      "comment": "object",
+      "offensive_label": "int64",
+      "link_post": "object",
+      "rationales_annotator1": "object",
+      "rationales_annotator2": "object"
+    },
+    "null_count": {
+      "id": 0,
+      "comment": 0,
+      "offensive_label": 0,
+      "link_post": 0,
+      "rationales_annotator1": 3500,
+      "rationales_annotator2": 3500
+    },
+    "empty_string_count": {
+      "id": 0,
+      "comment": 0,
+      "offensive_label": 0,
+      "link_post": 0,
+      "rationales_annotator1": 0,
+      "rationales_annotator2": 0
+    }
+  },
+  "statistics": {
+    "exact_duplicate_rows": 0,
+    "class_distribution": {
+      "0": 3500,
+      "1": 3500
+    },
+    "unique_ids": 7000,
+    "exact_duplicate_comments": 0,
+    "normalized_duplicate_comments": 0,
+    "conflicting_normalized_label_groups": 0,
+    "unique_link_posts": 85,
+    "unique_link_posts_by_class": {
+      "0": 74,
+      "1": 64
+    },
+    "link_posts_shared_between_classes": 53,
+    "rationales_non_null_by_class": {
+      "rationales_annotator1": {
+        "0": 0,
+        "1": 3500
+      },
+      "rationales_annotator2": {
+        "0": 0,
+        "1": 3500
+      }
+    }
+  },
+  "checks": {
+    "source_sha256_matches": true,
+    "row_count_matches": true,
+    "columns_match": true,
+    "ids_are_complete_and_unique": true,
+    "comments_are_present": true,
+    "labels_are_binary_and_balanced": true,
+    "link_posts_are_present": true,
+    "comments_have_no_exact_duplicates": true,
+    "comments_have_no_normalized_duplicates": true,
+    "normalized_duplicates_have_no_label_conflicts": true,
+    "rationales_follow_offensive_label": true
+  },
+  "valid": true,
+  "failed_checks": []
+}

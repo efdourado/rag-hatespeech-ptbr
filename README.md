@@ -39,14 +39,33 @@ source .venv/bin/activate
 python -m pip install -e '.[dev]'
 ```
 
-Coloque o arquivo oficial do HateBRXplain em `data/raw/`, sem versioná-lo. Então:
+Baixe a revisão fixada do HateBRXplain em `data/raw/`, sem versioná-la:
 
 ```bash
-python scripts/inspect_dataset.py data/raw/ARQUIVO.csv
+curl -L --fail \
+  "https://raw.githubusercontent.com/franciellevargas/HateBR/0ac05461f17c4d7b7655fbee0391ec325e61a83b/dataset/HateBRXplain.csv" \
+  -o data/raw/HateBRXplain.csv
 ```
 
-O script é somente leitura e grava um relatório agregado em
-`outputs/tables/dataset_audit.json`.
+Então execute a auditoria:
+
+```bash
+python scripts/inspect_dataset.py data/raw/HateBRXplain.csv
+```
+
+O script verifica origem, hash, esquema, classes, IDs, duplicatas e presença de
+*rationales*. Ele não inclui comentários ou links individuais na saída e grava o
+relatório agregado em `outputs/tables/dataset_audit.json`.
+
+Gere as partições congeladas:
+
+```bash
+python -m scripts.create_splits data/raw/HateBRXplain.csv
+```
+
+O manifesto local fica em `data/processed/split_manifest.csv` e contém somente
+`id`, `fold` e `split`. Seu hash e as estatísticas agregadas ficam registrados em
+`outputs/tables/split_audit.json`.
 
 ## Fase atual: dados
 
@@ -62,6 +81,13 @@ deve concluir quatro entregas:
 
 O plano, os artefatos esperados e os critérios de conclusão estão em
 [`docs/data-preparation-plan.md`](docs/data-preparation-plan.md).
+
+### Estado em 4 de agosto de 2026
+
+- Aquisição e proveniência: concluídas.
+- Contrato e auditoria: concluídos, com todos os controles aprovados.
+- Partições agrupadas por publicação: congeladas e aprovadas.
+- Próxima etapa: calibrar o guia de sarcasmo com um piloto da validação.
 
 ## Cuidados
 
