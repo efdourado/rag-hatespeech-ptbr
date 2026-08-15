@@ -1,8 +1,17 @@
-# Protocolo de pesquisa — versão de trabalho v0.2
+# Protocolo de pesquisa — versão de trabalho v0.3
 
 Desenho derivado da versão final do PCC de 22 de julho de 2026. Decisões
 experimentais ainda abertas devem ser fechadas com o orientador antes da execução
 final, sem alterar o tema definido no PCC.
+
+> Atualizado em 2026-08-15: a pergunta principal abaixo já está congelada
+> desde a versão final do PCC (22/07/2026, seção 1.5.1) e não é mais um
+> ponto em aberto. A lista de pontos abertos foi revisada para refletir
+> apenas o que de fato ainda depende de decisão. Ver
+> [`13_guia_escrita_tcc.md`](13_guia_escrita_tcc.md) para o
+> mapeamento completo entre PCC e TCC, e
+> [`5_decisoes_pendentes.md`](5_decisoes_pendentes.md) para as decisões que
+> ainda precisam do autor/orientador.
 
 ## Pergunta principal
 
@@ -56,7 +65,23 @@ quando comparado ao mesmo LLM sem recuperação?
 
 ## Pontos abertos
 
-- Confirmar pergunta e hipóteses finais.
-- Definir embeddings, LLM, armazenamento vetorial e orçamento.
-- Definir tratamento dos casos `incerto` na análise principal.
-- Confirmar disponibilidade de segundo anotador humano.
+Atualizado em 2026-08-15 — a maior parte destes pontos foi resolvida; ver
+12_decisoes.md para as decisões e 5_decisoes_pendentes.md para o que
+continua em aberto.
+
+- ~~Confirmar pergunta e hipóteses finais.~~ Resolvido: a pergunta principal
+  está congelada desde o PCC final (22/07/2026). Uma proposta de magnitude
+  para a hipótese quantitativa já foi calculada (12_decisoes.md), pendente
+  de confirmação do orientador e de recálculo com dados reais.
+- ~~Definir embeddings, LLM, armazenamento vetorial e orçamento.~~
+  Resolvido: Gemini como provedor de LLM/embeddings; Pinecone e LangChain
+  serão tentados primeiro, com *fallback* local se necessário
+  (12_decisoes.md).
+- ~~Definir se Pinecone/LangChain/FastAPI (nomeados no PCC) serão usados
+  como descrito ou substituídos por uma implementação local mais
+  simples.~~ Resolvido: tentar as ferramentas nomeadas no PCC primeiro;
+  FastAPI incluído no escopo.
+- Definir tratamento dos casos `incerto` na análise principal — ainda em
+  aberto, depende dos dados do piloto de anotação.
+- ~~Confirmar disponibilidade de segundo anotador humano.~~ Resolvido: um
+  segundo anotador já está disponível.

@@ -6,13 +6,17 @@ pode entrar no índice de recuperação, direta ou indiretamente.
 
 ## Progresso
 
-| Etapa | Estado em 4 de agosto de 2026 |
+| Etapa | Estado em 15 de agosto de 2026 |
 |---|---|
 | 0 — aquisição e proveniência | concluída |
 | 1 — contrato e auditoria | concluída |
 | 2 — IDs, duplicatas e derivados | concluída; nenhuma duplicata encontrada |
 | 3 — partições congeladas | concluída com agrupamento por `link_post` |
-| 4 — piloto de sarcasmo | pendente |
+| 4 — piloto de sarcasmo | pendente (tarefa humana, não delegável) |
+
+Ver também `4_estado_projeto.md` para o estado completo do projeto,
+incluindo o que está além destas quatro etapas (baseline determinístico já
+implementado; ver "O que vem depois" abaixo).
 
 ## Etapa 0 — aquisição e proveniência
 
@@ -48,7 +52,7 @@ Esses elementos podem carregar sinais linguísticos relevantes.
 agregadas e seguro para revisão antes de eventual publicação.
 
 **Concluída quando:** o esquema real foi documentado e toda divergência em relação
-ao PCC tem uma decisão registrada em `docs/decisions.md`.
+ao PCC tem uma decisão registrada em `12_decisoes.md`.
 
 ## Etapa 2 — IDs, duplicatas e dados derivados
 
@@ -85,8 +89,9 @@ verificações automáticas para:
 - reprodutibilidade com a mesma semente;
 - uso exclusivo do treino no futuro índice RAG.
 
-**Artefatos:** `data/processed/split_manifest.csv`, mantido fora do Git, e o
-relatório agregado `outputs/tables/split_audit.json`.
+**Artefatos:** `data/processed/split_manifest.csv` (versionado desde
+2026-08-15 — contém só `id`, `fold`, `split`, sem texto) e o relatório
+agregado `outputs/tables/split_audit.json`.
 
 **Concluída quando:** os testes de integridade passam e as partições são congeladas
 antes de ajustar prompts, `top-k`, embeddings ou modelos.
@@ -95,7 +100,7 @@ antes de ajustar prompts, `top-k`, embeddings ou modelos.
 
 Somente depois de congelar as partições, selecionar da validação o piloto de 100
 itens previsto no protocolo, balanceado por ofensividade. Aplicar
-`docs/annotation-guidelines.md`, revisar casos incertos e versionar o guia antes da
+`11_diretrizes_anotacao.md`, revisar casos incertos e versionar o guia antes da
 anotação principal do teste.
 
 As anotações contêm texto sensível e não devem ser publicadas automaticamente.
@@ -109,14 +114,25 @@ definido como os rótulos `incerto` entram ou não na análise.
 
 Com as etapas anteriores aprovadas, a sequência técnica é:
 
-1. baseline determinístico de classificação;
-2. baseline do mesmo LLM sem recuperação;
-3. escolha e avaliação do modelo de embeddings no conjunto de validação;
+1. ~~baseline determinístico de classificação~~ — **concluído em
+   2026-08-15**: TF-IDF + regressão logística, `scripts/run_baseline.py`,
+   F1 da classe ofensiva de 0,7646 na validação
+   (`outputs/tables/baseline_validation.json`). Ver `12_decisoes.md`.
+2. baseline do mesmo LLM sem recuperação — provedor já decidido (Gemini,
+   ver `12_decisoes.md`), falta implementar;
+3. escolha e avaliação do modelo de embeddings no conjunto de validação —
+   idem;
 4. índice construído exclusivamente com treino;
 5. RAG com `top-k` definido na validação;
 6. execução única da avaliação final no teste e análise separada do estrato
    sarcástico.
 
-Pinecone, LangChain e FastAPI são meios de implementação, não pré-requisitos para
-validar a hipótese. Uma prova local simples deve anteceder a infraestrutura de
-serviço.
+Ver `7_arquitetura_pipeline.md` para o desenho detalhado de cada um
+destes componentes.
+
+Pinecone e LangChain serão tentados primeiro (o plano gratuito do Pinecone
+comporta a escala do projeto; LangChain não tem custo). Uma implementação
+local mais simples fica como alternativa se alguma das duas ferramentas se
+mostrar um obstáculo real na prática — ver `12_decisoes.md`. FastAPI está
+incluído no escopo, para depois que o pipeline de experimentos estiver
+pronto.

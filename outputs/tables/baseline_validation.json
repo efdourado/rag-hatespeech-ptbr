@@ -1,0 +1,35 @@
+{
+  "experiment_id": "tfidf_logreg_baseline-e7790f76",
+  "timestamp_utc": "2026-08-15T15:35:26.661230+00:00",
+  "git_commit": "b7d6c835be36461be496e8234aaaa1b3f2f71df6",
+  "model_name": "tfidf_logreg_baseline",
+  "hyperparameters": {
+    "random_state": 42,
+    "vectorizer": "tfidf(ngram_range=(1,2), min_df=2, sublinear_tf=True, lowercase=True)",
+    "classifier": "logistic_regression(class_weight=balanced, max_iter=1000)"
+  },
+  "split_evaluated": "validation",
+  "train_rows": 5608,
+  "eval_rows": 706,
+  "dataset_source_sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+  "manifest_sha256": "6a7212fbb42c26fc8e9c8f1ef3fe391fb9f651d5c14820fc3e2b521002208033",
+  "expected_source_sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+  "expected_manifest_sha256": "6a7212fbb42c26fc8e9c8f1ef3fe391fb9f651d5c14820fc3e2b521002208033",
+  "metrics": {
+    "n_samples": 706,
+    "positive_f1": 0.7646219686162625,
+    "positive_precision": 0.7701149425287356,
+    "positive_recall": 0.7592067988668555,
+    "macro_f1": 0.7662772290338696,
+    "confusion_matrix": [
+      [
+        273,
+        80
+      ],
+      [
+        85,
+        268
+      ]
+    ]
+  }
+}

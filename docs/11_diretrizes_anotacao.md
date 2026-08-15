@@ -14,6 +14,14 @@ da IA durante a decisão humana inicial, sempre que o processo permitir.
 - `2` — incerto: decisão depende de contexto ausente, entonação ou conhecimento
   externo insuficiente.
 
+O rótulo `2` não é uma terceira categoria semântica de sarcasmo — é o
+registro de que quem está anotando não tem, a partir do texto disponível,
+contexto suficiente para decidir com confiança entre `0` e `1`. A decisão
+deve vir sempre da leitura direta do comentário (e do contexto realmente
+disponível), nunca de uma expectativa sobre a resposta do classificador em
+avaliação (ver 12_decisoes.md, "Esclarecimento do rótulo de sarcasmo
+`incerto`").
+
 Ironia e sarcasmo podem se sobrepor, mas o trabalho deve adotar uma definição
 operacional única. Casos limítrofes serão discutidos durante o piloto.
 
@@ -35,7 +43,8 @@ operacional única. Casos limítrofes serão discutidos durante o piloto.
 2. Anotar sem consultar a sugestão da IA.
 3. Comparar discordâncias, registrar exemplos e revisar este guia.
 4. Congelar uma versão do guia antes da anotação principal.
-5. Submeter 10% a 20% a segundo anotador humano independente, se disponível.
+5. Submeter 10% a 20% a segundo anotador humano independente (já
+   confirmado — ver 12_decisoes.md, "Segundo anotador humano disponível").
 
 O piloto de calibração não poderá usar itens do teste. Após o congelamento do guia,
 os rótulos do teste serão produzidos sem novas mudanças nas regras motivadas pelos
