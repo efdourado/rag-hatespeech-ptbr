@@ -61,7 +61,10 @@ consistentes: PCC final (1.1, 1.6, 5.2), 12_decisoes.md,
 3. Dividir treino/validação/teste com `StratifiedGroupKFold`, agrupando por
    `link_post` canônico, semente fixa. **Concluído, congelado.**
 4. Calibrar o guia de sarcasmo com piloto de 100 itens da validação.
-   **Pendente — requer anotação humana; segundo anotador já confirmado.**
+   **Pendente — planilhas já geradas
+   (`data/annotations/sarcasm_pilot.xlsx` e
+   `..._second_annotator.xlsx`, ver 11_diretrizes_anotacao.md), falta
+   preencher; é tarefa humana.**
 5. Anotar sarcasmo no teste (IA apenas como pré-anotadora, decisão final
    humana). **Pendente — bloqueado pela etapa 4.**
 6. Baseline determinístico de classificação de ofensividade. **Concluído**
@@ -109,9 +112,10 @@ consistentes: PCC final (1.1, 1.6, 5.2), 12_decisoes.md,
   definida; "pontos abertos" já revisados para refletir o PCC final e as
   decisões de 2026-08-15.
 - **Guia de anotação de sarcasmo**: protocolo e rótulos definidos
-  (11_diretrizes_anotacao.md), mas nunca aplicado a nenhum item real.
-  Zero anotações existem em `data/annotations/` (pasta contém apenas
-  `.gitkeep`).
+  (11_diretrizes_anotacao.md); as planilhas do piloto (100 itens + amostra
+  do segundo anotador) já foram geradas por
+  `scripts/prepare_sarcasm_pilot.py`, mas nenhuma linha foi preenchida
+  ainda — zero anotações reais existem.
 - **Arquitetura do sistema RAG**: descrita conceitualmente no PCC (Pinecone
   + LangChain + FastAPI); a decisão atual é tentar as três (ver
   7_arquitetura_pipeline.md), mas nenhum código de recuperação, indexação,
@@ -119,8 +123,10 @@ consistentes: PCC final (1.1, 1.6, 5.2), 12_decisoes.md,
 
 ## 9. O que ainda falta (lista objetiva)
 
-1. Executar o piloto de anotação de sarcasmo (100 itens da validação) —
-   tarefa humana, com um segundo anotador já confirmado para uma amostra.
+1. Preencher as planilhas do piloto de anotação de sarcasmo (já geradas
+   em `data/annotations/`, ver 11_diretrizes_anotacao.md, "Passo a passo
+   do piloto") — tarefa humana, com um segundo anotador já confirmado
+   para o subconjunto.
 2. Congelar o guia de anotação com base no piloto.
 3. Anotar sarcasmo no conjunto de teste.
 4. Escolher a versão exata do modelo Gemini (geração e embeddings) e

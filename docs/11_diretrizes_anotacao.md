@@ -50,6 +50,70 @@ O piloto de calibração não poderá usar itens do teste. Após o congelamento 
 os rótulos do teste serão produzidos sem novas mudanças nas regras motivadas pelos
 resultados experimentais.
 
+## Passo a passo do piloto (planilhas já geradas)
+
+1. Gerar (ou regerar) as planilhas:
+
+   ```bash
+   source .venv/bin/activate
+   python -m scripts.prepare_sarcasm_pilot data/raw/HateBRXplain.csv
+   ```
+
+   Isso cria dois arquivos em `data/annotations/` (locais, nunca
+   versionados, porque contêm texto real dos comentários):
+
+   - `sarcasm_pilot.xlsx` — os 100 itens (50 ofensivos, 50 não ofensivos,
+     sorteados só do conjunto de validação, nunca do teste). É a planilha
+     que você preenche.
+   - `sarcasm_pilot_second_annotator.xlsx` — um subconjunto de ~15 itens
+     (mesmos `id`s de 15 linhas do arquivo principal), para o segundo
+     anotador preencher de forma independente.
+
+   Também grava `outputs/tables/sarcasm_pilot_audit.json` (versionado —
+   só ids e contagens, sem texto), para conferir depois que a amostra foi
+   sorteada corretamente.
+
+2. Abrir `data/annotations/sarcasm_pilot.xlsx` no Excel, Google Sheets ou
+   LibreOffice Calc. Colunas:
+
+   | Coluna | O que fazer |
+   |---|---|
+   | `id` | não mexer — é só o identificador do comentário |
+   | `comment` | leia este texto: é o comentário a classificar |
+   | `human_sarcasm_label` | preencha `0`, `1` ou `2` (menu suspenso já configurado na célula) — ver definições em "Rótulos" acima |
+   | `sarcasm_evidence` | opcional: cole o menor trecho do comentário que sustenta sua decisão |
+   | `annotation_notes` | opcional: uma frase curta se o caso for difícil |
+   | `review_status` | deixe `pending`; mude para `reviewed` quando tiver certeza da linha |
+
+3. Anote linha por linha, na ordem que preferir, sem pular a leitura de
+   nenhum comentário. Não consulte nada além do próprio texto do
+   comentário — nem o rótulo de ofensividade (que nem está na planilha),
+   nem qualquer sugestão de IA (não existe pré-anotação de IA implementada
+   ainda), nem o que você acha que um classificador diria.
+
+4. Salve o arquivo (`Ctrl+S`/`Cmd+S`) periodicamente — pode anotar aos
+   poucos, não precisa terminar tudo de uma vez.
+
+5. Para o segundo anotador: envie `sarcasm_pilot_second_annotator.xlsx`
+   para o seu amigo (e-mail, Drive, WhatsApp — como preferir; é um
+   arquivo local, não tem nada automatizado de envio). Ele preenche a
+   coluna `human_sarcasm_label` de forma independente, sem ver as suas
+   respostas para os mesmos itens.
+
+6. Quando as duas planilhas estiverem preenchidas, isso vira insumo para:
+   revisar discordâncias e ajustar este guia (passo 3 do procedimento
+   acima), calcular Cohen's kappa entre as duas anotações do subconjunto
+   comum, e só depois congelar o guia para anotar o teste. O código para
+   calcular a concordância e consolidar as respostas ainda não existe —
+   é o próximo passo depois que houver planilhas preenchidas para
+   processar.
+
+Não é preciso "enviar" a planilha principal para lugar nenhum: ela fica
+local, em `data/annotations/`, e o próprio repositório já a mantém fora do
+Git (contém texto de comentários reais). O `sarcasm_pilot_audit.json`
+(sem texto) é que fica versionado, como prova de que a amostra foi
+sorteada de forma correta e reprodutível.
+
 ## Não fazer
 
 - Não usar *rationale* de ofensividade como rótulo verdadeiro de sarcasmo.

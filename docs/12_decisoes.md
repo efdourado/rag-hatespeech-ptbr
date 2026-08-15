@@ -316,3 +316,31 @@ efetivamente implementa, ver [13_guia_escrita_tcc.md](13_guia_escrita_tcc.md).
   dataset".
 - Fontes: [franciellevargas/HateBR](https://github.com/franciellevargas/HateBR),
   [HateBR/README.md](https://github.com/franciellevargas/HateBR/blob/main/README.md).
+
+## 2026-08-15 — Ferramenta de preparação do piloto de sarcasmo
+
+- Decisão: implementar `scripts/prepare_sarcasm_pilot.py` para sortear os
+  100 itens do piloto (50 por classe de ofensividade, só do split de
+  validação, semente 42) e gerar duas planilhas `.xlsx` prontas para
+  anotação manual: uma com os 100 itens (para o autor) e uma com um
+  subconjunto de ~15 itens (para o segundo anotador), além de um relatório
+  agregado sem texto em `outputs/tables/sarcasm_pilot_audit.json`.
+- Motivo: o autor relatou não saber como começar a anotação manual. Uma
+  ferramenta que sorteia a amostra corretamente (sem vazar itens de
+  teste, sem expor `offensive_label`, de forma determinística e
+  reprodutível) e entrega o resultado em formato de planilha comum reduz
+  o atrito de começar, sem substituir o julgamento humano em nenhuma
+  decisão de rótulo.
+- Execução real: rodado nesta sessão contra o dataset local. Resultado:
+  100 itens no piloto (50/50), 15 no subconjunto do segundo anotador,
+  ambos amostrados exclusivamente do split `validation`. Reexecutado uma
+  segunda vez para confirmar reprodutibilidade — relatório agregado saiu
+  byte-idêntico.
+- Escopo do que a ferramenta faz e não faz: só sorteia a amostra e
+  formata as planilhas. Não anota nada, não sugere rótulos (nenhuma
+  pré-anotação por IA está implementada), e não calcula concordância
+  entre anotadores — isso fica para uma etapa futura, depois que as
+  planilhas estiverem preenchidas.
+- Artefatos locais (não versionados, contêm texto de comentários):
+  `data/annotations/sarcasm_pilot.xlsx`,
+  `data/annotations/sarcasm_pilot_second_annotator.xlsx`.

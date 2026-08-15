@@ -110,12 +110,43 @@ parte:
 - **Cota gratuita do Gemini** ainda não verificada para o modelo específico
   que será usado — depende de decisão tomada no momento da implementação.
 
+### Parte 3 — ferramenta de preparação do piloto de sarcasmo
+
+O autor pediu instruções concretas de como fazer a anotação manual
+(qual planilha, onde olhar, onde anotar, como enviar). Em vez de só
+explicar, foi implementada uma ferramenta:
+
+- `src/rag_hatespeech_ptbr/sarcasm_pilot.py` — sorteio determinístico de
+  100 itens da validação (50/50 por `offensive_label`, nunca do teste,
+  semente 42) e de um subconjunto de ~15 itens para o segundo anotador
+  (mesmos `id`s de parte do piloto, semente 43). `offensive_label` nunca
+  entra na planilha de anotação.
+- `scripts/prepare_sarcasm_pilot.py` — CLI que gera as duas planilhas
+  `.xlsx` (com menu suspenso para os rótulos `0`/`1`/`2` e para
+  `review_status`, cabeçalho congelado, texto do comentário com quebra de
+  linha) e um relatório agregado sem texto.
+- `tests/test_sarcasm_pilot.py` — 6 testes novos, incluindo a checagem de
+  vazamento mais importante aqui: nenhum `id` sorteado pode vir de
+  `train`/`test`.
+
+Executado nesta sessão contra o dataset real:
+`data/annotations/sarcasm_pilot.xlsx` (100 itens),
+`data/annotations/sarcasm_pilot_second_annotator.xlsx` (15 itens) — os
+dois ficam locais, fora do Git, porque contêm texto real de comentários.
+`outputs/tables/sarcasm_pilot_audit.json` (versionado, só ids e
+contagens) confirma a amostra e é reproduzível — reexecutado uma segunda
+vez, saiu byte-idêntico.
+
+Passo a passo completo de como preencher e o que fazer com a planilha do
+segundo anotador está em 11_diretrizes_anotacao.md, seção "Passo a passo
+do piloto".
+
 ### Próximos passos (ordem recomendada)
 
 1. Revisar este relatório e 3_checklist_revisao.md (ver
    2_ordem_revisao.md para a ordem exata).
-2. Agendar e executar o piloto de anotação de sarcasmo (100 itens da
-   validação) — pode acontecer em paralelo aos itens abaixo.
+2. Preencher as planilhas do piloto de anotação de sarcasmo — pode
+   acontecer em paralelo aos itens abaixo.
 3. Implementar a interface de embeddings + tentativa de índice no
    Pinecone, restrito ao treino.
 4. Implementar o baseline do Gemini sem recuperação (com modo *dry-run*
