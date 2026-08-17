@@ -15,6 +15,7 @@ data/processed/*
 data/annotations/*
 !data/**/.gitkeep
 !data/processed/split_manifest.csv
+!data/annotations/mensagem_para_verificadores.txt
 outputs/experiments/*
 !outputs/experiments/.gitkeep
 

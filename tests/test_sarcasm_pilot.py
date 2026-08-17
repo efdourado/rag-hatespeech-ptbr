@@ -3,9 +3,14 @@ import pytest
 
 from rag_hatespeech_ptbr.sarcasm_pilot import (
     compute_agreement,
+    compute_multi_rater_agreement,
+    fleiss_kappa,
+    load_labeled_pool,
     select_additional_sample,
     select_pilot_sample,
+    select_reliability_check_subset,
     select_second_annotator_subset,
+    write_annotation_workbook,
 )
 
 
@@ -143,3 +148,111 @@ def test_compute_agreement_raises_without_overlap() -> None:
 
     with pytest.raises(ValueError):
         compute_agreement(primary, second)
+
+
+def _labeled_pool() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "id": list(range(1, 11)),
+            "comment": [f"comentario sintetico {i}" for i in range(1, 11)],
+            "human_sarcasm_label": [0, 0, 1, 2, 0, 0, 1, 0, 2, 0],
+            "sarcasm_evidence": [""] * 10,
+            "annotation_notes": [""] * 10,
+            "review_status": ["reviewed"] * 10,
+        }
+    )
+
+
+def test_select_reliability_check_subset_is_blind_and_deterministic() -> None:
+    pool = _labeled_pool()
+
+    first = select_reliability_check_subset(pool, n=4, random_state=7)
+    second = select_reliability_check_subset(pool, n=4, random_state=7)
+
+    pd.testing.assert_frame_equal(first, second)
+    assert (first["human_sarcasm_label"] == "").all()
+    assert set(first["id"]).issubset(set(pool["id"]))
+
+
+def test_select_reliability_check_subset_excludes_already_checked_ids() -> None:
+    pool = _labeled_pool()
+    exclude_ids = {1, 2, 3}
+
+    subset = select_reliability_check_subset(pool, n=4, random_state=7, exclude_ids=exclude_ids)
+
+    assert set(subset["id"]).isdisjoint(exclude_ids)
+
+
+def test_select_reliability_check_subset_raises_if_pool_too_small() -> None:
+    pool = _labeled_pool()
+
+    with pytest.raises(ValueError):
+        select_reliability_check_subset(pool, n=100, random_state=7)
+
+
+def test_fleiss_kappa_is_one_for_perfect_agreement() -> None:
+    labels = pd.DataFrame({"rater_a": [0, 1, 2], "rater_b": [0, 1, 2], "rater_c": [0, 1, 2]})
+
+    assert fleiss_kappa(labels) == pytest.approx(1.0, abs=1e-9)
+
+
+def test_fleiss_kappa_matches_hand_computed_example() -> None:
+    labels = pd.DataFrame(
+        {
+            "rater_a": [0, 1, 2],
+            "rater_b": [0, 1, 2],
+            "rater_c": [1, 1, 0],
+        }
+    )
+
+    assert fleiss_kappa(labels) == pytest.approx(0.3078, abs=1e-3)
+
+
+def test_fleiss_kappa_requires_at_least_two_raters() -> None:
+    labels = pd.DataFrame({"rater_a": [0, 1, 2]})
+
+    with pytest.raises(ValueError):
+        fleiss_kappa(labels)
+
+
+def test_compute_multi_rater_agreement_includes_fleiss_with_two_checkers() -> None:
+    primary = pd.DataFrame({"id": [1, 2, 3], "human_sarcasm_label": [0, 1, 2]})
+    checker_a = pd.DataFrame({"id": [1, 2, 3], "human_sarcasm_label": [0, 1, 2]})
+    checker_b = pd.DataFrame({"id": [1, 2, 3], "human_sarcasm_label": [0, 1, 0]})
+
+    result = compute_multi_rater_agreement(primary, {"amigo_a": checker_a, "amigo_b": checker_b})
+
+    assert set(result["pairwise"].keys()) == {"amigo_a", "amigo_b"}
+    assert result["pairwise"]["amigo_a"]["exact_agreement_rate"] == pytest.approx(1.0)
+    assert "fleiss_kappa" in result
+    assert result["fleiss_kappa_n_items"] == 3
+
+
+def test_load_labeled_pool_survives_concat_with_still_blank_sheet(tmp_path) -> None:
+    """Regressão: escrever um lote em branco (via write_annotation_workbook,
+    como as planilhas reais) e concatenar com um lote já rotulado não pode
+    fazer os rótulos válidos desaparecerem por causa da promoção int->float
+    que o pandas faz ao juntar uma coluna inteira com uma coluna de NaN.
+    """
+    labeled = select_pilot_sample(_synthetic_frame(), n_per_class=5, random_state=1)
+    labeled["human_sarcasm_label"] = [0, 1, 2, 0, 1, 2, 0, 1, 0, 1]
+    still_blank = select_pilot_sample(_synthetic_frame(), n_per_class=5, random_state=2)
+
+    labeled_path = tmp_path / "labeled.xlsx"
+    blank_path = tmp_path / "blank.xlsx"
+    write_annotation_workbook(labeled, labeled_path)
+    write_annotation_workbook(still_blank, blank_path)
+
+    pool = load_labeled_pool([labeled_path, blank_path])
+
+    assert len(pool) == 10
+    assert set(pool["human_sarcasm_label"].astype(int)) == {0, 1, 2}
+
+
+def test_compute_multi_rater_agreement_skips_fleiss_with_single_checker() -> None:
+    primary = pd.DataFrame({"id": [1, 2], "human_sarcasm_label": [0, 1]})
+    checker_a = pd.DataFrame({"id": [1, 2], "human_sarcasm_label": [0, 1]})
+
+    result = compute_multi_rater_agreement(primary, {"amigo_a": checker_a})
+
+    assert "fleiss_kappa" not in result

@@ -122,6 +122,138 @@ def load_annotation_workbook(path: Path) -> pd.DataFrame:
     return table[ANNOTATION_COLUMNS]
 
 
+def _is_labeled(series: pd.Series) -> pd.Series:
+    """True onde o valor é um rótulo válido (0, 1 ou 2).
+
+    Coage para numérico em vez de comparar strings: concatenar planilhas
+    onde uma tem rótulos preenchidos (inteiros) e outra ainda está em
+    branco (lida de volta do Excel como `NaN`) força a coluna inteira
+    para `float64` — "0" preenchido vira `0.0`, que uma comparação de
+    string ingênua ("0.0" != "0") deixaria passar como não rotulado.
+    """
+    return pd.to_numeric(series, errors="coerce").isin([0, 1, 2])
+
+
+def load_labeled_pool(paths: list[Path]) -> pd.DataFrame:
+    """Concatena planilhas já em uso e mantém só as linhas com rótulo preenchido.
+
+    É o "poço" de itens já julgados por você mesmo, do qual um novo
+    verificador de confiabilidade pode ser sorteado — nunca inclui linhas
+    ainda `pending`/em branco, porque não há com o que comparar.
+    """
+    frames = [load_annotation_workbook(path) for path in paths if path.is_file()]
+    if not frames:
+        raise FileNotFoundError(f"Nenhuma planilha encontrada em {paths}")
+    combined = pd.concat(frames, ignore_index=True)
+    if combined[ID_COLUMN].duplicated().any():
+        raise ValueError("Ids duplicados entre as planilhas informadas.")
+    return combined.loc[_is_labeled(combined["human_sarcasm_label"])].reset_index(drop=True)
+
+
+def select_reliability_check_subset(
+    labeled_pool: pd.DataFrame,
+    *,
+    n: int,
+    random_state: int,
+    exclude_ids: set[int] | None = None,
+) -> pd.DataFrame:
+    """Sorteia `n` itens já rotulados por você, em branco para um novo verificador.
+
+    Usado para checar concordância com mais pessoas sobre o que você já
+    anotou, sem gerar trabalho de anotação nova nem depender de terceiros
+    para ampliar a base — só mede o quanto os rótulos que você já deu se
+    sustentam com outra pessoa olhando o mesmo item.
+    """
+    exclude_ids = exclude_ids or set()
+    candidates = labeled_pool.loc[~labeled_pool[ID_COLUMN].isin(exclude_ids)]
+    if len(candidates) < n:
+        raise ValueError(
+            f"Só há {len(candidates)} itens rotulados disponíveis, mas foram pedidos {n}."
+        )
+    subset = candidates.sample(n=n, random_state=random_state).reset_index(drop=True)
+
+    blind = subset[[ID_COLUMN, COMMENT_COLUMN]].copy()
+    blind["human_sarcasm_label"] = ""
+    blind["sarcasm_evidence"] = ""
+    blind["annotation_notes"] = ""
+    blind["review_status"] = "pending"
+    return blind[ANNOTATION_COLUMNS]
+
+
+def fleiss_kappa(labels: pd.DataFrame) -> float:
+    """Fleiss' kappa para 3+ avaliadores nas mesmas colunas 0/1/2.
+
+    `labels`: uma linha por item, uma coluna por avaliador, valores em
+    {0, 1, 2}. Todas as colunas devem estar completamente preenchidas
+    (sem valores ausentes) para os mesmos itens.
+    """
+    categories = [0, 1, 2]
+    n_items, n_raters = labels.shape
+    if n_raters < 2:
+        raise ValueError("Fleiss' kappa exige pelo menos 2 avaliadores.")
+
+    counts = pd.DataFrame(
+        {
+            category: (labels == category).sum(axis=1)
+            for category in categories
+        }
+    )
+    if not (counts.sum(axis=1) == n_raters).all():
+        raise ValueError("Cada item precisa ter exatamente `n_raters` rótulos válidos.")
+
+    p_item = (counts.pow(2).sum(axis=1) - n_raters) / (n_raters * (n_raters - 1))
+    p_bar = p_item.mean()
+
+    p_category = counts.sum(axis=0) / (n_items * n_raters)
+    p_e = (p_category.pow(2)).sum()
+
+    if p_e == 1:
+        return 1.0
+    return float((p_bar - p_e) / (1 - p_e))
+
+
+def compute_multi_rater_agreement(
+    primary: pd.DataFrame, checkers: dict[str, pd.DataFrame]
+) -> dict[str, object]:
+    """Concordância entre você e um ou mais verificadores adicionais.
+
+    Reporta o kappa par a par (você vs. cada verificador) e, se houver
+    2 ou mais verificadores com itens em comum, o Fleiss' kappa conjunto
+    (você + todos) na interseção dos itens que todos rotularam.
+    """
+    pairwise = {
+        name: compute_agreement(primary, checker) for name, checker in checkers.items()
+    }
+
+    result: dict[str, object] = {"pairwise": pairwise}
+
+    if len(checkers) >= 2:
+        merged = primary[[ID_COLUMN, "human_sarcasm_label"]].rename(
+            columns={"human_sarcasm_label": "primary"}
+        )
+        for name, checker in checkers.items():
+            merged = merged.merge(
+                checker[[ID_COLUMN, "human_sarcasm_label"]].rename(
+                    columns={"human_sarcasm_label": name}
+                ),
+                on=ID_COLUMN,
+                how="inner",
+            )
+        rater_columns = ["primary", *checkers.keys()]
+        for column in rater_columns:
+            merged[column] = pd.to_numeric(merged[column], errors="raise").astype(int)
+
+        if len(merged) > 0:
+            result["fleiss_kappa"] = round(fleiss_kappa(merged[rater_columns]), 4)
+            result["fleiss_kappa_n_items"] = len(merged)
+            result["fleiss_kappa_raters"] = rater_columns
+        else:
+            result["fleiss_kappa"] = None
+            result["fleiss_kappa_n_items"] = 0
+
+    return result
+
+
 def load_annotated_ids(paths: list[Path]) -> set[int]:
     """União dos `id`s presentes em uma ou mais planilhas (preenchidas ou não).
 

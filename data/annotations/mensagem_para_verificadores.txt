@@ -1,0 +1,19 @@
+Oi! Preciso de uma ajuda rápida pro meu TCC (uns 10-15 min).
+
+Em anexo, uma planilha com 30 comentários reais de rede social (alguns são
+ofensivos — faz parte da pesquisa). Pra cada linha, leia o comentário e
+preencha só a coluna "human_sarcasm_label" com:
+
+0 = não é sarcasmo (mesmo que seja ofensivo, exagerado ou engraçado)
+1 = é sarcasmo (tem uma ironia clara — diz uma coisa querendo dizer o
+    contrário)
+2 = não dá pra saber só com esse texto (falta contexto)
+
+Não precisa preencher as outras colunas nem justificar. É bem provável que
+a maioria seja "0" — isso é esperado, não é pegadinha.
+
+Uma coisa importante: decida sozinho(a), sem me perguntar ou mostrar pra
+ninguém antes de me mandar de volta — preciso que seja sua opinião sem
+influência de ninguém, nem a minha.
+
+Quando terminar, salva e me manda de volta. Valeu!

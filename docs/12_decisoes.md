@@ -391,3 +391,47 @@ efetivamente implementa, ver [13_guia_escrita_tcc.md](13_guia_escrita_tcc.md).
   mudança de escopo não deve ser decidida unilateralmente — precisa
   constar como decisão registrada, com a anuência do orientador, antes de
   entrar no texto final do TCC.
+
+## 2026-08-15 — Anotação de calibração solo + checagem de confiabilidade com múltiplos verificadores
+
+- Decisão: em vez de distribuir pedaços exclusivos dos 606 itens do
+  `batch2` entre vários amigos, o autor anota tudo sozinho. Motivo:
+  distribuir pedaços não sobrepostos entre pessoas não treinadas
+  reproduz (e pode piorar) o mesmo problema já visto no primeiro
+  segundo anotador — cada pessoa aplica o guia à sua maneira, sem
+  nenhuma checagem cruzada possível na maior parte dos itens.
+- Decisão complementar: em vez de mais volume, ampliar a *confiabilidade*
+  do que já foi anotado. Implementado
+  `scripts/prepare_reliability_check.py`: sorteia um subconjunto (30
+  itens, semente 44) do que o autor já rotulou, exclui os 15 itens já
+  checados pelo primeiro segundo anotador, e gera cópias idênticas e em
+  branco — uma por verificador — para pessoas diferentes julgarem
+  independentemente os mesmos itens. Não é anotação nova: mede o quanto
+  o critério do autor se sustenta com outras pessoas olhando o mesmo
+  comentário.
+- Implementado também `scripts/check_multi_rater_agreement.py` /
+  `compute_multi_rater_agreement()`: kappa par a par (autor vs. cada
+  verificador, reaproveitando `compute_agreement`) e, com 2+
+  verificadores respondidos, Fleiss' kappa conjunto (implementado à mão,
+  sem dependência nova, validado por dois casos calculados manualmente:
+  concordância perfeita → 1,0; um caso com discordância → 0,3078, ambos
+  cobertos por teste).
+- Execução real: gerados `sarcasm_reliability_check_1.xlsx`, `_2.xlsx`,
+  `_3.xlsx` (30 itens idênticos e em branco cada, mesmos ids nos três,
+  confirmados reprodutíveis). Mensagem curta pronta para enviar aos
+  verificadores em
+  `data/annotations/mensagem_para_verificadores.txt` (versionada — sem
+  texto de comentário, só instrução).
+- Bug encontrado e corrigido durante a implementação: concatenar uma
+  planilha já rotulada (inteiros) com uma ainda em branco (lida do Excel
+  como `NaN`) faz o pandas promover a coluna inteira para `float64`; uma
+  comparação de string ingênua (`"0.0" != "0"`) descartava rótulos
+  válidos como se estivessem em branco. Corrigido comparando
+  numericamente (`pd.to_numeric(...).isin([0, 1, 2])`); teste de
+  regressão adicionado.
+- Reservado para o futuro (já registrado antes, reafirmado aqui): quando
+  chegar a hora de anotar o conjunto de teste (686 itens, os que geram
+  os números do TCC), repetir o esquema de segundo anotador em 10-20%
+  da anotação, para haver um kappa reportável nos dados que sustentam a
+  conclusão final — o lote de calibração atual (`batch2`) não precisa
+  disso porque não vira resultado citado no texto.
