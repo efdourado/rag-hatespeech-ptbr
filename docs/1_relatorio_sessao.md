@@ -141,17 +141,53 @@ Passo a passo completo de como preencher e o que fazer com a planilha do
 segundo anotador está em 11_diretrizes_anotacao.md, seção "Passo a passo
 do piloto".
 
+## Sessão de 2026-08-15 (continuação) — resultado real do piloto
+
+O autor preencheu as duas planilhas do piloto (100 itens + subconjunto de
+15 do segundo anotador) e trouxe o resultado de volta. Números reais,
+lidos das planilhas preenchidas:
+
+- Anotador principal (100 itens): 84× `0`, 15× `2` (incerto), 1× `1`
+  (sarcástico).
+- Segundo anotador (15 itens, subconjunto): 13× `0`, 2× `1`, 0× `2`.
+- Concordância nos 15 itens em comum: 80% bruta, Cohen's kappa 0,196
+  (calculado por `scripts/check_annotation_agreement.py`, novo nesta
+  sessão, registrado em `outputs/tables/sarcasm_annotation_agreement.json`).
+
+Interpretação e decisão registradas em 12_decisoes.md ("Resultado real do
+piloto de sarcasmo e risco de poder estatístico"): taxa de sarcasmo
+claramente identificado baixa (~1%), coerente com o corpus ser majoritariamente
+ofensa direta, não irônica. Isso não afeta o experimento principal (RAG
+vs. Gemini sem RAG sobre `offensive_label`), só a análise secundária por
+estrato sarcástico, que fica sob risco de baixo poder estatístico —
+registrado como decisão pendente (D12 em 5_decisoes_pendentes.md, precisa
+de confirmação do orientador se a taxa continuar baixa).
+
+Ação tomada: implementado `scripts/expand_sarcasm_sample.py` (amostragem
+aleatória adicional dentro da validação, balanceada por ofensividade,
+excluindo ids já em circulação — nunca curadoria manual, nunca usando
+*rationales* de ofensividade como pista de sarcasmo). Rodado contra o
+dataset real: gerou `data/annotations/sarcasm_pilot_batch2.xlsx` com os
+606 itens restantes da validação (303 por classe). Confirmado que nenhum
+id vem de treino/teste, e que a execução é reprodutível.
+
 ### Próximos passos (ordem recomendada)
 
 1. Revisar este relatório e 3_checklist_revisao.md (ver
    2_ordem_revisao.md para a ordem exata).
-2. Preencher as planilhas do piloto de anotação de sarcasmo — pode
-   acontecer em paralelo aos itens abaixo.
-3. Implementar a interface de embeddings + tentativa de índice no
+2. Preencher `data/annotations/sarcasm_pilot_batch2.xlsx` (606 itens, no
+   ritmo que for possível) para reduzir a incerteza da taxa de sarcasmo
+   antes de decidir D12.
+3. Rodar `scripts/check_annotation_agreement.py` de novo sempre que
+   houver anotação nova do segundo anotador para acompanhar a
+   concordância.
+4. Levar o achado (taxa baixa de sarcasmo) e a decisão D12 para o
+   orientador.
+5. Implementar a interface de embeddings + tentativa de índice no
    Pinecone, restrito ao treino.
-4. Implementar o baseline do Gemini sem recuperação (com modo *dry-run*
+6. Implementar o baseline do Gemini sem recuperação (com modo *dry-run*
    primeiro).
-5. Implementar RAG completo, calibrado na validação, via LangChain como
+7. Implementar RAG completo, calibrado na validação, via LangChain como
    primeira tentativa.
-6. Só então: avaliação final única no teste, com `--confirm-final-test-run`.
-7. Serviço FastAPI e interface de avaliação de explicabilidade.
+8. Só então: avaliação final única no teste, com `--confirm-final-test-run`.
+9. Serviço FastAPI e interface de avaliação de explicabilidade.

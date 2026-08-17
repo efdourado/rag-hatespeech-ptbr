@@ -23,6 +23,29 @@ duas proporções independentes com n=686 — ver 12_decisoes.md,
 Consequência de adiar além do razoável: se o critério só for fixado depois
 de ver o resultado do teste, a análise perde rigor.
 
+## D12 — Escopo da análise por estrato sarcástico, se a taxa continuar baixa
+
+O piloto real (100 itens da validação) achou taxa de sarcasmo claramente
+identificado de ~1%, com Cohen's kappa baixo (0,196) entre os dois
+anotadores — ver 12_decisoes.md, "Resultado real do piloto de sarcasmo e
+risco de poder estatístico". Um segundo lote de 606 itens (todo o
+restante da validação) já foi gerado para reduzir a incerteza dessa
+estimativa antes de decidir qualquer coisa.
+
+Se a taxa continuar baixa mesmo com a amostra ampliada:
+
+- Opção 1: manter o objetivo específico 5 do PCC como comparação
+  estatística de F1 por estrato, aceitando que o intervalo de confiança
+  vai ficar largo (documentado como limitação).
+- Opção 2: reformular essa parte do TCC como análise qualitativa/estudo
+  de caso dos exemplos sarcásticos encontrados, em vez de comparação
+  quantitativa — mais honesto com o tamanho de amostra real, mas é uma
+  mudança do que o texto promete.
+
+Consequência de adiar: nenhuma agora (a amostra ampliada ainda precisa
+ser anotada); mas precisa estar decidido antes de escrever o capítulo de
+resultados do TCC.
+
 ## D8 — Desenho concreto do formulário de avaliação de explicabilidade
 
 A direção já foi aceita (formulário/interface + Postgres + hospedagem

@@ -153,6 +153,7 @@ consistentes: PCC final (1.1, 1.6, 5.2), 12_decisoes.md,
 | Bloqueador | Tipo | Impacto |
 |---|---|---|
 | Piloto e anotação principal de sarcasmo exigem julgamento humano | Estrutural | Bloqueia toda a análise estratificada por sarcasmo (o segundo eixo central do TCC) |
+| Taxa real de sarcasmo no piloto ficou baixa (~1%, kappa 0,196 entre anotadores) | Achado empírico, amostra ampliada (606 itens) já gerada pra reduzir a incerteza | Ver 12_decisoes.md, "Resultado real do piloto de sarcasmo"; pode exigir mudar o escopo da análise por estrato de quantitativa pra qualitativa (D12 em 5_decisoes_pendentes.md) |
 | Confirmação da cota gratuita do modelo Gemini escolhido | Verificação rápida no momento da implementação | Define se dá para rodar os experimentos sem habilitar faturamento |
 | Confirmação do orientador sobre a magnitude da hipótese quantitativa (D7) | Decisão do orientador | Afeta o critério de sucesso da comparação final |
 

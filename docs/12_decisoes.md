@@ -344,3 +344,50 @@ efetivamente implementa, ver [13_guia_escrita_tcc.md](13_guia_escrita_tcc.md).
 - Artefatos locais (não versionados, contêm texto de comentários):
   `data/annotations/sarcasm_pilot.xlsx`,
   `data/annotations/sarcasm_pilot_second_annotator.xlsx`.
+
+## 2026-08-15 — Resultado real do piloto de sarcasmo e risco de poder estatístico
+
+- Resultado observado (planilha principal, 100 itens da validação): 84
+  `0` (não sarcástico), 15 `2` (incerto), 1 `1` (sarcástico). Segundo
+  anotador (15 itens, subconjunto dos mesmos 100): 13 `0`, 2 `1`, 0 `2`.
+  Concordância exata nos 15 itens em comum: 80% (12/15); Cohen's kappa:
+  0,196 — baixo apesar da concordância bruta alta, efeito esperado quando
+  a distribuição é muito desbalanceada (poucos casos fora de `0`).
+  Calculado por `scripts/check_annotation_agreement.py`, registrado em
+  `outputs/tables/sarcasm_annotation_agreement.json`.
+- Constatação: taxa de sarcasmo claramente identificado é baixa
+  (~1% na amostra). Coerente com a natureza do corpus — os comentários do
+  HateBRXplain (auditados desde 2026-08-04) são majoritariamente ofensa
+  direta ("lixo", "comunista safada", "vagabunda"), não ironia. Se essa
+  taxa se mantiver no teste (686 itens), o estrato sarcástico teria da
+  ordem de poucas unidades a poucas dezenas de itens — pouco poder
+  estatístico para uma comparação quantitativa de F1 por estrato.
+- O que isso NÃO afeta: o experimento principal (RAG vs. Gemini sem RAG,
+  nos 686 itens do teste, sobre `offensive_label`) independe da taxa de
+  sarcasmo — o índice RAG é construído a partir de ofensividade no
+  treino, nunca de rótulos de sarcasmo. Só a análise secundária
+  ("melhora mais nos casos sarcásticos?") está em risco de ficar
+  subdimensionada.
+- Decisão: ampliar a amostra de calibração dentro da validação antes de
+  decidir qualquer mudança de escopo — sorteio aleatório balanceado por
+  ofensividade do restante do split (nunca curadoria manual de itens
+  "que parecem sarcásticos", e nunca usando os *rationales* de
+  ofensividade como pista, pelo mesmo motivo de sempre: eles justificam
+  ofensividade, não sarcasmo). Implementado em
+  `scripts/expand_sarcasm_sample.py`.
+- Execução real: gerado um segundo lote com os 606 itens restantes da
+  validação (303 por classe — todo o restante do split, já que o autor
+  sinalizou disposição de anotar bastante mais que os 100 iniciais),
+  excluindo os 100 já em circulação. Verificado que nenhum id do novo
+  lote pertence a treino ou teste, e que a execução é reprodutível
+  (relatório byte-idêntico ao reexecutar). Artefato local (não
+  versionado): `data/annotations/sarcasm_pilot_batch2.xlsx`. Relatório
+  agregado (sem texto): `outputs/tables/sarcasm_sample_expansion_audit.json`.
+- Pendente, precisa de confirmação do orientador: se a taxa de sarcasmo
+  continuar baixa mesmo com a amostra ampliada, o objetivo específico 5
+  do PCC ("melhora... especialmente em comentários sarcásticos") pode
+  precisar ser reportado como análise qualitativa/exploratória dos casos
+  encontrados, em vez de comparação estatística de F1 por estrato. Essa
+  mudança de escopo não deve ser decidida unilateralmente — precisa
+  constar como decisão registrada, com a anuência do orientador, antes de
+  entrar no texto final do TCC.

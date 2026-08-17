@@ -1,0 +1,21 @@
+{
+  "n_common": 15,
+  "exact_agreement": 12,
+  "exact_agreement_rate": 0.8,
+  "cohen_kappa": 0.1964,
+  "confusion_primary_rows_second_cols": {
+    "0": {
+      "0": 12,
+      "1": 1
+    },
+    "2": {
+      "1": 1,
+      "0": 1
+    }
+  },
+  "disagreement_ids": [
+    1801,
+    4946,
+    5306
+  ]
+}

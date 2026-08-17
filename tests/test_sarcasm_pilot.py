@@ -1,7 +1,12 @@
 import pandas as pd
 import pytest
 
-from rag_hatespeech_ptbr.sarcasm_pilot import select_pilot_sample, select_second_annotator_subset
+from rag_hatespeech_ptbr.sarcasm_pilot import (
+    compute_agreement,
+    select_additional_sample,
+    select_pilot_sample,
+    select_second_annotator_subset,
+)
 
 
 def _synthetic_frame() -> pd.DataFrame:
@@ -82,3 +87,59 @@ def test_select_pilot_sample_requires_enough_items_per_class() -> None:
 
     with pytest.raises(ValueError):
         select_pilot_sample(frame, n_per_class=1000, random_state=1)
+
+
+def test_select_additional_sample_excludes_already_used_ids_and_never_leaks() -> None:
+    frame = _synthetic_frame()
+    pilot = select_pilot_sample(frame, n_per_class=10, random_state=1)
+    exclude_ids = set(pilot["id"])
+    validation_ids = set(frame.loc[frame["split"] == "validation", "id"])
+
+    additional = select_additional_sample(frame, exclude_ids=exclude_ids, random_state=2)
+
+    assert set(additional["id"]).isdisjoint(exclude_ids)
+    assert set(additional["id"]).issubset(validation_ids)
+    assert len(additional) == len(validation_ids) - len(exclude_ids)
+
+
+def test_select_additional_sample_respects_n_per_class_cap() -> None:
+    frame = _synthetic_frame()
+
+    additional = select_additional_sample(
+        frame, exclude_ids=set(), n_per_class=5, random_state=2
+    )
+
+    assert len(additional) == 10
+
+
+def test_compute_agreement_matches_manual_calculation() -> None:
+    primary = pd.DataFrame(
+        {
+            "id": [1, 2, 3, 4],
+            "comment": ["texto sensivel 1", "texto sensivel 2", "texto sensivel 3", "texto sensivel 4"],
+            "human_sarcasm_label": [0, 0, 1, 2],
+        }
+    )
+    second = pd.DataFrame(
+        {
+            "id": [1, 2, 3, 5],
+            "comment": ["texto sensivel 1", "texto sensivel 2", "texto sensivel 3", "texto sensivel 5"],
+            "human_sarcasm_label": [0, 1, 1, 0],
+        }
+    )
+
+    result = compute_agreement(primary, second)
+
+    assert result["n_common"] == 3
+    assert result["exact_agreement"] == 2
+    assert result["exact_agreement_rate"] == pytest.approx(2 / 3, abs=1e-3)
+    assert result["disagreement_ids"] == [2]
+    assert "texto sensivel" not in str(result)
+
+
+def test_compute_agreement_raises_without_overlap() -> None:
+    primary = pd.DataFrame({"id": [1], "human_sarcasm_label": [0]})
+    second = pd.DataFrame({"id": [2], "human_sarcasm_label": [0]})
+
+    with pytest.raises(ValueError):
+        compute_agreement(primary, second)
