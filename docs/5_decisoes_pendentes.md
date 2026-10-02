@@ -1,5 +1,12 @@
 # Decisões ainda pendentes
 
+> Atualização em 2026-10-02: provedor agora é OpenRouter; modelo fixo de geração
+> gratuito/compatível será escolhido antes da primeira chamada. Embeddings locais
+> e índice local já funcionam; Pinecone/LangChain continuam sem integração.
+> As planilhas da validação serão preservadas como entregues; incerteza fica em
+> estrato separado, sem exclusão da métrica geral de ofensividade. Pendências
+> atuais e ordem: [14_execucao_openrouter_rag.md](14_execucao_openrouter_rag.md).
+
 A maior parte das decisões que estavam em aberto (provedor de LLM, Pinecone
 vs. local, LangChain vs. código próprio, escopo do FastAPI, segundo
 anotador, fixação de versão, versionamento do manifesto, citação de

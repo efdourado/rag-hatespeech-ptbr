@@ -1,5 +1,10 @@
 # Arquitetura do pipeline experimental
 
+> Estado em 2026-10-02: cliente OpenRouter, embeddings locais/via API, índice
+> local de treino, comparação baseline/RAG/ablação e FastAPI implementados.
+> Os itens abaixo registram o desenho anterior. Implementação e comandos
+> atuais: [14_execucao_openrouter_rag.md](14_execucao_openrouter_rag.md).
+
 Este documento descreve, componente a componente, o pipeline necessário
 para executar o experimento descrito no PCC/protocolo de pesquisa. Cada
 componente tem um estado (feito, planejado, bloqueado) e uma justificativa

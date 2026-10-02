@@ -1,0 +1,19 @@
+{
+  "recorded_date": "2026-10-02",
+  "dataset_source_sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+  "manifest_sha256": "6a7212fbb42c26fc8e9c8f1ef3fe391fb9f651d5c14820fc3e2b521002208033",
+  "source_split": "train",
+  "train_rows": 5608,
+  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "dry_run": false,
+  "dimensions": 384,
+  "metric": "cosine",
+  "embedded_fields": ["comment"],
+  "max_sequence_tokens": 128,
+  "texts_exceeding_token_limit": 34,
+  "maximum_input_tokens": 304,
+  "device": "cpu",
+  "index_sha256": "5045b9b5a26c667f36f76a69b26d3b01ea4b6f3c74121570690bcc7acb6c8998",
+  "openrouter_inference_requests": 0
+}

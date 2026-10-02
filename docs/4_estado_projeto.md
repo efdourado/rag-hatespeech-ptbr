@@ -1,5 +1,10 @@
 # Estado do projeto
 
+> Atualização em 2026-10-02: dados, baseline e anotação de toda a validação
+> concluídos; pipeline OpenRouter/RAG implementado e índice semântico local
+> gerado. A chave será usada posteriormente. Retome pelo
+> [guia atual](14_execucao_openrouter_rag.md). O detalhamento abaixo é histórico.
+
 > Ponto de entrada para orientar a continuidade do TCC. Este arquivo é
 > vivo: deve ser atualizado sempre que um componente mudar de estado.
 > Ele reflete o estado do repositório local, que está à frente do que

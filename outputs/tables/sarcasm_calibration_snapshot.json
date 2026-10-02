@@ -1,0 +1,26 @@
+{
+  "recorded_date": "2026-10-02",
+  "source_split": "validation",
+  "annotation_decision": "preserve_as_submitted",
+  "primary_annotator_rows": 706,
+  "label_counts": {"0": 627, "1": 18, "2": 61},
+  "workbooks": [
+    {
+      "file": "sarcasm_pilot.xlsx",
+      "sha256": "41b1d09bfaf1471e093774229dbe8ec031469b672c6bb38c8e5df88d99d91e6e",
+      "rows": 100,
+      "label_counts": {"0": 84, "1": 1, "2": 15}
+    },
+    {
+      "file": "sarcasm_pilot_batch2.xlsx",
+      "sha256": "d5998ad0461295e290d97ee4b1eb25a249a7c704f420ef013b062aad0374db62",
+      "rows": 606,
+      "label_counts": {"0": 543, "1": 17, "2": 46}
+    }
+  ],
+  "test_sarcasm_annotation_complete": false,
+  "new_reliability_results_available": false,
+  "uncertain_policy": "include_in_overall_offensiveness_metrics_report_separate_sarcasm_stratum",
+  "dataset_source_sha256": "dd2b669ab8c055805b4813b2628961d951273577fc637039f5eec1238cc9f8bb",
+  "manifest_sha256": "6a7212fbb42c26fc8e9c8f1ef3fe391fb9f651d5c14820fc3e2b521002208033"
+}

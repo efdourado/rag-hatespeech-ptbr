@@ -435,3 +435,30 @@ efetivamente implementa, ver [13_guia_escrita_tcc.md](13_guia_escrita_tcc.md).
   da anotação, para haver um kappa reportável nos dados que sustentam a
   conclusão final — o lote de calibração atual (`batch2`) não precisa
   disso porque não vira resultado citado no texto.
+
+## 2026-10-02 — Preservar anotações e iniciar OpenRouter/RAG
+
+- O autor concluiu os 606 itens do segundo lote e decidiu não revisar novamente
+  essa planilha. Preservar as duas planilhas originais e registrar seus hashes,
+  sem completar evidências/notas ou substituir julgamentos humanos com IA.
+  Validação completa: 627 rótulos `0`, 18 `1`, 61 `2` (706 itens).
+  Snapshot agregado em `outputs/tables/sarcasm_calibration_snapshot.json`.
+- Incertos permanecem incluídos no F1 geral de ofensividade e são reportados
+  separadamente nos estratos. A anotação do teste e a abrangência da análise
+  secundária ainda precisam ser tratadas antes da avaliação final.
+- Por solicitação do autor, adotar OpenRouter no lugar da API direta de Gemini.
+  A chave existe, mas deve ser usada somente posteriormente. Nenhuma inferência
+  real pelo OpenRouter nesta sessão; o catálogo público foi consultado sem chave.
+- Priorizar embeddings locais para o início sem cobrança de API; alternativa
+  OpenRouter também implementada. Modelo multilíngue inicial e revisão fixados
+  no relatório do índice: 5.608 vetores de 384 dimensões, somente do treino.
+  Há 34 textos acima do limite de 128 tokens do encoder; auditar a influência
+  dessa truncagem na validação antes de congelar o experimento final.
+- Implementar índice local de referência, mesmo prompt para baseline/RAG/ablação,
+  parsing estrito, cache, retomada, registro das execuções e FastAPI local.
+  Chamadas diretas permitem inspecionar o payload e o uso nesta etapa. Pinecone
+  e LangChain continuam sem implementação; não registrar uma tentativa/falha
+  ou equivalência de índices que não ocorreu.
+- Reservar o teste; desenvolver/calibrar na validação. Próximo passo real:
+  escolher um LLM fixo compatível com a conta gratuita e comparar cinco itens.
+  Guia operacional: `docs/14_execucao_openrouter_rag.md`.

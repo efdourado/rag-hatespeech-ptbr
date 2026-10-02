@@ -1,5 +1,12 @@
 # Protocolo de pesquisa — versão de trabalho v0.3
 
+> Atualização em 2026-10-02: OpenRouter substitui a integração direta com Gemini;
+> o modelo de geração será escolhido antes da primeira inferência. Embeddings
+> semânticos locais são o ponto de partida para evitar custo de API. Anotações
+> de validação são preservadas como entregues; incertos são reportados à parte
+> nos estratos e permanecem incluídos na métrica geral de ofensividade.
+> Pergunta, splits, alvo e reserva do teste permanecem os mesmos.
+
 Desenho derivado da versão final do PCC de 22 de julho de 2026. Decisões
 experimentais ainda abertas devem ser fechadas com o orientador antes da execução
 final, sem alterar o tema definido no PCC.

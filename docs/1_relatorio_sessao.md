@@ -191,3 +191,19 @@ id vem de treino/teste, e que a execução é reprodutível.
    primeira tentativa.
 8. Só então: avaliação final única no teste, com `--confirm-final-test-run`.
 9. Serviço FastAPI e interface de avaliação de explicabilidade.
+
+## Sessão de 2026-10-02 — Implementação OpenRouter/RAG
+
+- Validação anotada integralmente (706 comentários). O autor decidiu preservar
+  o trabalho entregue e seguir para a implementação, sem nova edição de planilha.
+- Cliente OpenRouter de geração/embeddings, prompt versionado e parsing estrito;
+  embeddings locais e cache SQLite para a alternativa remota; índice de treino
+  por cosseno; baseline LLM, RAG e ablação comparáveis e retomáveis.
+- Índice semântico real gerado localmente: 5.608 × 384, modelo/revisão fixados,
+  34 textos acima do limite de tokens, dataset/manifesto verificados por hash.
+  Consulta de recuperação executada sem usar chave ou inferência OpenRouter.
+- Serviço FastAPI local implementado e testes do pipeline verificados.
+- Chave guardada para depois. O próximo passo é escolher um modelo fixo e rodar
+  cinco comentários da validação com e sem RAG; teste final ainda reservado.
+- Comandos e estado atual em `14_execucao_openrouter_rag.md`. Pinecone,
+  LangChain, análise estatística final e redação permanecem etapas posteriores.

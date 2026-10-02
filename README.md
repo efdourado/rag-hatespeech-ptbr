@@ -4,9 +4,10 @@ Projeto de TCC sobre classificação de linguagem ofensiva em português brasile
 com foco na avaliação de comentários sarcásticos e no uso de exemplos recuperados
 do HateBRXplain.
 
-> Status: início do TCC. O escopo foi consolidado na versão final do PCC de
-> 22 de julho de 2026; a fase atual é a preparação reprodutível dos dados e
-> a implementação do primeiro baseline.
+> Status em 2 de outubro de 2026: dados/splits e baseline estatístico concluídos,
+> 706 comentários da validação anotados. Pipeline OpenRouter + RAG implementado;
+> índice semântico local gerado, primeira inferência com chave ainda pendente.
+> Retome por [`docs/14_execucao_openrouter_rag.md`](docs/14_execucao_openrouter_rag.md).
 
 ## Objetivo
 
@@ -33,8 +34,9 @@ tests/        testes automatizados
 
 ### Índice de `docs/`
 
-Os arquivos são numerados na ordem sugerida de leitura para quem está
-retomando o projeto. `1_relatorio_sessao.md` é o ponto de partida.
+Para retomar agora, comece por `14_execucao_openrouter_rag.md`.
+Os demais arquivos registram o protocolo e a evolução do projeto;
+`1_relatorio_sessao.md` contém o histórico cronológico.
 
 | # | Arquivo | Conteúdo |
 |---|---|---|
@@ -51,6 +53,7 @@ retomando o projeto. `1_relatorio_sessao.md` é o ponto de partida.
 | 11 | [`11_diretrizes_anotacao.md`](docs/11_diretrizes_anotacao.md) | Guia de anotação de sarcasmo |
 | 12 | [`12_decisoes.md`](docs/12_decisoes.md) | Registro histórico de todas as decisões do projeto |
 | 13 | [`13_guia_escrita_tcc.md`](docs/13_guia_escrita_tcc.md) | Guia para escrever o TCC: rastreabilidade PCC→TCC e critérios de qualidade |
+| 14 | [`14_execucao_openrouter_rag.md`](docs/14_execucao_openrouter_rag.md) | Fase atual, execução de embeddings/LLM/RAG e próximas entregas |
 
 ## Primeiros passos
 
@@ -102,7 +105,7 @@ conjunto de teste exige `--split test --confirm-final-test-run` e fica
 registrado em `outputs/experiments/test_evaluations_ledger.jsonl` — ver
 [`docs/12_decisoes.md`](docs/12_decisoes.md) (2026-08-15) para a justificativa.
 
-## Fase atual: dados e primeiro baseline
+## Base concluída: dados e primeiro baseline
 
 Antes de implementar embeddings, banco vetorial ou integração com LLM, o projeto
 concluiu quatro entregas:
@@ -117,7 +120,7 @@ concluiu quatro entregas:
 O plano, os artefatos esperados e os critérios de conclusão estão em
 [`docs/10_plano_dados.md`](docs/10_plano_dados.md).
 
-### Estado em 15 de agosto de 2026
+### Estado histórico em 15 de agosto de 2026
 
 - Aquisição e proveniência: concluídas.
 - Contrato e auditoria: concluídos, com todos os controles aprovados.
@@ -134,6 +137,21 @@ O plano, os artefatos esperados e os critérios de conclusão estão em
   não delegável) e implementar o baseline de LLM sem recuperação.
 - Para o estado completo e detalhado do projeto, ver
   [`docs/4_estado_projeto.md`](docs/4_estado_projeto.md).
+
+## Executar o pipeline atual
+
+```bash
+python -m pip install -e '.[dev,api]'
+python -m scripts.build_retrieval_index data/raw/HateBRXplain.csv
+python -m scripts.run_llm_experiment data/raw/HateBRXplain.csv \
+  --modes baseline rag rag_no_rationales --limit 20
+```
+
+Esses comandos são simulações sem chave/custo. Embeddings semânticos locais,
+OpenRouter real, retomada e FastAPI estão documentados no
+[`guia atual`](docs/14_execucao_openrouter_rag.md). OpenRouter é o provedor atual;
+Gemini/Pinecone/LangChain acima são decisões históricas. Pinecone e LangChain
+continuam sem implementação.
 
 ## Cuidados
 
